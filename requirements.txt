@@ -1,0 +1,17 @@
+# Core Requirements
+customtkinter>=5.2.0
+pyperclip>=1.8.2
+pywin32>=306
+pyinstaller>=5.13.0
+
+# Additional dependencies for malware functionality
+requests>=2.31.0
+pycryptodome>=3.19.0
+
+# Windows-specific (included in pywin32 but explicitly listed)
+win32clipboard
+win32con
+win32api
+
+# For building the executable
+setuptools>=68.0.0

