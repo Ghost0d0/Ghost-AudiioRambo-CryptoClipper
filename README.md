@@ -130,5 +130,6 @@ By using this tool, you agree to assume full responsibility and comply with all 
 Licensed under the [MIT License](LICENSE).
 
 ---
-
+> Buy me a coffee - _0xf89c84554c78B3194A56042bd803CcA62EA423E9_
+> 
 > 👻 **AudiioRambo / Ghost** – _Because even ghosts leave traces._
